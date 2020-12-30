@@ -20,7 +20,9 @@
             <!-- Содержимое страницы -->
             {% endblock %}
         </div>
-        <!--{% include 'includes/paginator.html' %}-->
+        {% if page.has_other_pages %}
+            {% include "includes/paginator.html" with items=page paginator=paginator %}
+        {% endif %}
     </main>
     {% include 'includes/footer.html' %}
     

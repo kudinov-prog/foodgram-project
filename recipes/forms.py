@@ -7,7 +7,7 @@ class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
         fields = [
-            'title', 'tags', 'ingredients', 'duration', 'description', 'image',
+            'title', 'tags', 'ingredients', 'duration', 'description', 'image', 'slug'
             ]
         #labels = {'group': 'Группа', 'text': 'Текст', 'image': 'Картинка'}
         #help_texts = {

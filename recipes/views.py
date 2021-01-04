@@ -50,6 +50,15 @@ def new_recipe(request):
     return render(request, 'new_recipe.html', {'form': form})
 
 
+def recipe_view(request, recipe_slug):
+    #user = get_object_or_404(User, username=username)
+    #count = Recipe.objects.filter(author=user)
+    recipe = get_object_or_404(Recipe, slug=recipe_slug)
+    #form = CommentForm()
+    #comments = post.comments.all()
+    return render(request, 'recipe.html', {'recipe': recipe})
+
+
 class FollowListView(LoginRequiredMixin, ListView):
     paginate_by = 6
     template_name = 'follow.html'
@@ -66,11 +75,11 @@ def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
     if not request.user == author:
         Follow.objects.get_or_create(user=request.user, author=author)
-    return redirect('profile', username=username)
+    return redirect('follow_index', username=username)
 
 
 @login_required
 def profile_unfollow(request, username):
     author = get_object_or_404(User, username=username)
     Follow.objects.filter(user=request.user, author=author).delete()
-    return redirect('profile', username=username)
+    return redirect('follow_index', username=username)

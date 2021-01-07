@@ -54,9 +54,30 @@ def recipe_view(request, recipe_slug):
     #user = get_object_or_404(User, username=username)
     #count = Recipe.objects.filter(author=user)
     recipe = get_object_or_404(Recipe, slug=recipe_slug)
-    #form = CommentForm()
-    #comments = post.comments.all()
-    return render(request, 'recipe.html', {'recipe': recipe})
+    try:
+        Follow.objects.get(author=recipe.author, user=request.user)
+        following = True
+    except:
+        following = False
+    return render(
+        request, 'recipe.html', {'recipe': recipe, 'following': following}
+    )
+
+
+def profile(request, username):
+    author = get_object_or_404(User, username=username)
+    recipes = Recipe.objects.filter(author=author)
+    paginator = Paginator(recipes, 6)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    try:
+        Follow.objects.get(author=author, user=request.user)
+        following = True
+    except:
+        following = False
+    return render(request, 'profile.html',
+                  {'page': page, 'paginator': paginator,
+                   'author': author, 'following': following})
 
 
 class FollowListView(LoginRequiredMixin, ListView):
@@ -69,6 +90,16 @@ class FollowListView(LoginRequiredMixin, ListView):
         chefs = User.objects.filter(id__in=list(follows))
         return chefs
 
+
+class FavoriteListView(LoginRequiredMixin, ListView):
+    paginate_by = 6
+    template_name = 'favorite.html'
+    context_object_name = 'favorite'
+    def get_queryset(self):
+        user = self.request.user
+        favorites = user.adder_user.all().values_list('recipe_id', flat=True)
+        fav_recipes = Recipe.objects.filter(id__in=list(favorites))
+        return fav_recipes
 
 @login_required
 def profile_follow(request, username):

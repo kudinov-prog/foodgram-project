@@ -6,7 +6,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Рецепты</title>
+    <title>Избранное</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
 </head>
@@ -17,12 +17,12 @@
 
     <main class="main container">
         <div class="main__header">
-            <h1 class="main__title">Рецепты</h1>
+            <h1 class="main__title">Избранное</h1>
             {% include 'includes/tags.html' %}
         </div>
         <div class="card-list">
             {% block content %}
-                {% for recipe in page %}
+                {% for recipe in favorite %}
                     {% include 'includes/recipe_card.html' with page=page %}
                 {% endfor %}
             {% endblock %}
@@ -32,19 +32,18 @@
         {% endif %}
     </main>
     {% include 'includes/footer.html' %}
-    
 
-    <script src="{% static 'js/components/MainCards.js' %}"></script>
 
-    <script src="{% static 'js/components/Purchases.js' %}"></script>
+<script src="{% static 'js/components/MainCards.js' %}"></script>
 
-    <script src="{% static 'js/config/config.js' %}"></script>
-    <script src="{% static 'js/components/CardList.js' %}"></script>
-    <script src="{% static 'js/components/Header.js' %}"></script>
-    
-    <script src="{% static 'js/api/Api.js' %}"></script>
-    <script src="{% static 'indexNotAuth.js' %}"></script>
-    <script src="{% static 'indexAuth.js' %}"></script>
+<script src="{% static 'js/components/Purchases.js' %}"></script>
+<script src="{% static 'js/components/Favorites.js' %}"></script>
 
+<script src="{% static 'js/config/config.js' %}"></script>
+<script src="{% static 'js/components/CardList.js' %}"></script>
+<script src="{% static 'js/components/Header.js' %}"></script>
+
+<script src="{% static 'js/api/Api.js' %}"></script>
+<script src="{% static 'favorite.js' %}"></script>
 </body>
 </html>

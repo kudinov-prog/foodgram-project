@@ -23,8 +23,10 @@
                 <div class="single-card__header-info">
                     <h1 class="single-card__title">{{ recipe.title }}</h1>
                     <div class="single-card__favorite">
+                        {% if request.user.is_authenticated %}
                         <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_big"></span></button>
                         <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
+                        {% endif %}
                     </div>
                 </div>
                 <ul class="single-card__items">
@@ -47,13 +49,24 @@
                 </div>
                 <ul class="single-card__items">
                     <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
-                    <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></li>
+                    {% if request.user.is_authenticated %}
+                        {% if following %}
+                        <div class="author-subscribe" data-author="{{ author.id }}">
+                            <p style="padding: 0 0 2em 0;"><a class="button button_style_light-blue" href="{% url 'profile_unfollow' recipe.author.username %}">Отписаться от автора</a></p>
+                        </div>
+                        {% else %}
+                        <div class="author-subscribe" data-author="{{ author.id }}">
+                            <p style="padding: 0 0 2em 0;"><a class="button button_style_light-blue" href="{% url 'profile_follow' recipe.author.username %}">Подписаться на автора</a></p>
+                            <!--<li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></li>-->
+                        </div>
+                        {% endif %}
+                    {% endif %}
                 </ul>
                 <div class="single-card__section">
                     <h3 class="single-card__section-title">Ингридиенты:</h3>
                     <div class="single-card__items single-card__items_column">
-                        {% for ingredient in recipe.ingredients.all %}
-                            <p class=" single-card__section-item">{{ ingredient.title }} - {{ ingredient.amount }} {{ ingredient.unit }}.</p>
+                        {% for item in recipe.ingredients.all %}
+                            <p class=" single-card__section-item">{{ item.title }} - {{ item.amount }} {{ item.unit }}.</p>
                         {% endfor %}
                         
                     </div>
@@ -68,15 +81,15 @@
     {% include 'includes/footer.html' %}
 
 
-<script src="./js/components/Purchases.js"></script>
-<script src="./js/components/Favorites.js"></script>
-<script src="./js/components/Subscribe.js"></script>
-<script src="./js/config/config.js"></script>
-<script src="./js/components/MainCards.js"></script>
-<script src="./js/components/SingleCard.js"></script>
-<script src="./js/components/Header.js"></script>
-<script src="./js/api/Api.js"></script>
-<script src="singlePage.js"></script>
+<script src="{% static 'js/components/Purchases.js' %}"></script>
+<script src="{% static 'js/components/Favorites.js' %}"></script>
+<script src="{% static 'js/components/Subscribe.js' %}"></script>
+<script src="{% static 'js/config/config.js' %}"></script>
+<script src="{% static 'js/components/MainCards.js' %}"></script>
+<script src="{% static 'js/components/SingleCard.js' %}"></script>
+<script src="{% static 'js/components/Header.js' %}"></script>
+<script src="{% static 'js/api/Api.js' %}"></script>
+<script src="{% static 'singlePage.js' %}"></script>
 
 </body>
 </html>

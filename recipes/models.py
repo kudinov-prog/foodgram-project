@@ -69,10 +69,10 @@ class Recipe(models.Model):
 
 class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(
-        Ingredient, on_delete=models.CASCADE , related_name='ingredients'
+        Ingredient, on_delete=models.CASCADE, related_name='recipe_ingredients'
     )
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE , related_name='recipes'
+        Recipe, on_delete=models.CASCADE, related_name='recipes'
     )
     amount = models.PositiveIntegerField(verbose_name='Количество')
 
@@ -89,5 +89,22 @@ class Follow(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=('user', 'author'), name='unique_follow'
+            )
+        ]
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='adder_user', null=True
+    )
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE, related_name='favorite_recipe',
+        null=True
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'), name='unique_favorite'
             )
         ]

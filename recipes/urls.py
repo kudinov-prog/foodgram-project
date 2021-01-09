@@ -9,6 +9,7 @@ urlpatterns = [
     path('profile/<str:username>/', views.profile, name='profile'),
     path("follow/", views.FollowListView.as_view(), name="follow_index"),
     path("favorite/", views.FavoriteListView.as_view(), name="favorite"),
+    path("shopping/", views.ShoppingListView.as_view(), name="shopping_list"),
     path(
         "<str:username>/follow/",
         views.profile_follow,

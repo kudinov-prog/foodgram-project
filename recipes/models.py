@@ -95,7 +95,8 @@ class Follow(models.Model):
 
 class Favorite(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='adder_user', null=True
+        User, on_delete=models.CASCADE, related_name='adder_user',
+        null=True
     )
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, related_name='favorite_recipe',
@@ -106,5 +107,23 @@ class Favorite(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=('user', 'recipe'), name='unique_favorite'
+            )
+        ]
+
+
+class ShoppingList(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='shopper',
+        null=True
+    )
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE, related_name='shopping_list',
+        null=True
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'), name='unique_shoplist'
             )
         ]

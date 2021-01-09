@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, reverse
 from django.shortcuts import get_object_or_404, get_list_or_404
 
 from .forms import RecipeForm
-from .models import Ingredient, Recipe, RecipeIngredient, Tag, User, Follow
+from .models import Ingredient, Recipe, RecipeIngredient, Tag, User, Follow, ShoppingList
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
@@ -51,8 +51,6 @@ def new_recipe(request):
 
 
 def recipe_view(request, recipe_slug):
-    #user = get_object_or_404(User, username=username)
-    #count = Recipe.objects.filter(author=user)
     recipe = get_object_or_404(Recipe, slug=recipe_slug)
     try:
         Follow.objects.get(author=recipe.author, user=request.user)
@@ -100,6 +98,18 @@ class FavoriteListView(LoginRequiredMixin, ListView):
         favorites = user.adder_user.all().values_list('recipe_id', flat=True)
         fav_recipes = Recipe.objects.filter(id__in=list(favorites))
         return fav_recipes
+
+
+class ShoppingListView(LoginRequiredMixin, ListView):
+    #paginate_by = 6
+    template_name = 'shopping_list.html'
+    context_object_name = 'shopping_list'
+    def get_queryset(self):
+        user = self.request.user
+        shopper = user.shopper.all().values_list('recipe_id', flat=True)
+        recipe_list = Recipe.objects.filter(id__in=list(shopper))
+        return recipe_list
+
 
 @login_required
 def profile_follow(request, username):

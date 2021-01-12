@@ -1,6 +1,7 @@
 Django==3.1.4
-django-environ
+django-environ==0.4.5
 psycopg2-binary==2.8.5
 pillow==8.0.1
 django-debug-toolbar==2.2
 sorl-thumbnail==12.6.3
+python-slugify==4.0.1

@@ -34,6 +34,7 @@ class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeIngredientInline,)
     list_display = ('author', 'title',)
     list_filter = ('author', 'title', 'tags',)
+    prepopulated_fields = {"slug": ("title",)}
 
 admin.site.register(Recipe, RecipeAdmin)
 

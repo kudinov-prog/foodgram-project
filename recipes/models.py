@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from slugify import slugify
 
 
 User = get_user_model()
@@ -65,6 +66,10 @@ class Recipe(models.Model):
 
     class Meta:
         ordering = ('-pub_date',)
+    
+    def save(self,  *args, **kwargs):
+        self.slug = slugify(self.title)
+        return super(Recipe, self).save(*args, **kwargs)
 
 
 class RecipeIngredient(models.Model):

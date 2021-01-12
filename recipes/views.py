@@ -7,7 +7,7 @@ from .forms import RecipeForm
 from .models import Ingredient, Recipe, RecipeIngredient, Tag, User, Follow, ShoppingList
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView
+from django.views.generic import ListView, View
 
 
 def page_not_found(request, exception):
@@ -101,7 +101,6 @@ class FavoriteListView(LoginRequiredMixin, ListView):
 
 
 class ShoppingListView(LoginRequiredMixin, ListView):
-    #paginate_by = 6
     template_name = 'shopping_list.html'
     context_object_name = 'shopping_list'
     def get_queryset(self):

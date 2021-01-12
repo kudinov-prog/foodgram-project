@@ -1,4 +1,5 @@
 <div class="card" data-id="{{ recipe.id }}">
+    {% load recipes_extras %}
     {% load thumbnail %}
     {% thumbnail recipe.image "364x240" crop="center" upscale=True as im %}
     <a href="#" class="link" target="_blank"><img src="{{ im.url }}" alt="{{ recipe.title }}" class="card__image"></a>
@@ -21,7 +22,22 @@
             <p class="card__text"><span class="icon-user"></span> <a href="{% url 'profile' recipe.author.username %}" style="color: black">{{ recipe.author.get_full_name }}</a></p> <!--Ссылка на автора-->
         </div>
     </div>
+    {% csrf_token %}
+    {% if request.user.is_authenticated %}
     <div class="card__footer">
-        <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+        {% if recipe|shopping_recipe:request.user %}
+            <button class="button button_style_light-blue" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button>
+        {% else %}
+            <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+            
+        {% endif %}
+        {% if recipe|is_favorite:request.user %}
+            <button class="button button_style_none" name="favorites" ><span class="icon-favorite icon-favorite_big icon-favorite_active"></span></button>
+            <div class="single-card__favorite-tooltip tooltip"></div>
+        {% else %}
+            <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_big"></span></button>
+            <div class="single-card__favorite-tooltip tooltip"></div>
+        {% endif %}
+    {% endif %}
     </div>
 </div>

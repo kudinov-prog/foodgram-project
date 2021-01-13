@@ -1,5 +1,6 @@
 <div class="card" data-id="{{ recipe.id }}">
     {% load recipes_extras %}
+    {% csrf_token %}
     {% load thumbnail %}
     {% thumbnail recipe.image "364x240" crop="center" upscale=True as im %}
     <a href="#" class="link" target="_blank"><img src="{{ im.url }}" alt="{{ recipe.title }}" class="card__image"></a>
@@ -22,9 +23,9 @@
             <p class="card__text"><span class="icon-user"></span> <a href="{% url 'profile' recipe.author.username %}" style="color: black">{{ recipe.author.get_full_name }}</a></p> <!--Ссылка на автора-->
         </div>
     </div>
-    {% csrf_token %}
-    {% if request.user.is_authenticated %}
+    
     <div class="card__footer">
+        {% if request.user.is_authenticated %}
         {% if recipe|shopping_recipe:request.user %}
             <button class="button button_style_light-blue" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button>
         {% else %}

@@ -45,7 +45,7 @@ class Recipe(models.Model):
         verbose_name="Описание"
     )
     ingredients = models.ManyToManyField(
-        Ingredient, through="RecipeIngredient"
+        Ingredient, through="RecipeIngredient", through_fields=('recipe', 'ingredient')
     )
     tags = models.ManyToManyField(
         Tag, verbose_name='Теги'
@@ -73,13 +73,13 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
+    amount = models.PositiveIntegerField(verbose_name='Количество')
     ingredient = models.ForeignKey(
         Ingredient, on_delete=models.CASCADE, related_name='recipe_ingredients'
     )
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, related_name='recipes'
     )
-    amount = models.PositiveIntegerField(verbose_name='Количество')
 
 
 class Follow(models.Model):

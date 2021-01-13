@@ -30,3 +30,35 @@ class Favorites(LoginRequiredMixin, View):
         recipe = get_object_or_404(Favorite, recipe=recipe_id, user=request.user)
         recipe.delete()
         return JsonResponse({'success': True})
+
+
+class Follows(LoginRequiredMixin, View):
+    """ Функция добавления/ удаления подписок
+    """
+    def get_queryset(self):
+        pass
+
+    def post(self, request):
+        req_ = json.loads(request.body)
+        author_id = req_.get('id', None)
+        if author_id is not None:
+            author = get_object_or_404(User, id=author_id)
+            if request.user == author:
+                return JsonResponse({'success': False})
+
+            follow, created = Follow.objects.get_or_create(
+                user=request.user, author=author
+            )
+            if created:
+                return JsonResponse({'success': True})
+            return JsonResponse({'success': False})
+        return JsonResponse({'success': False}, status=400)
+
+    def delete(self, request, author_id):
+        author = get_object_or_404(User, id=author_id)
+        removed = Follow.objects.filter(
+            user=request.user, author=author
+            ).delete()
+        if removed:
+            return JsonResponse({'success': True})
+        return JsonResponse({'success': False})

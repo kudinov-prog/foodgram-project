@@ -7,29 +7,30 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ author.get_full_name }}</title>
-    {% load static %}
+    {% load static recipes_extras %}
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
 </head>
 <body class="body">
 
     {% include 'includes/nav.html' %}
-
+    {% csrf_token %}
     <main class="main container">
         <div class="main__header">
             <h1 class="main__title">{{ author.get_full_name }}</h1>
             {% include 'includes/tags.html' %}
         </div>
-<!--        <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></p>-->
         
         {% if request.user.is_authenticated %}
-            {% if following %}
+            {% if request.user != author %}
+            {% if author|is_following:request.user %}
             <div class="author-subscribe" data-author="{{ author.id }}">
-                <p style="padding: 0 0 2em 0;"><a class="button button_style_light-blue" href="{% url 'profile_unfollow' author.username %}">Отписаться от автора</a></p>
+                <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto" name="subscribe" >Отписаться от автора</button></p>
             </div>
             {% else %}
             <div class="author-subscribe" data-author="{{ author.id }}">
-                <p style="padding: 0 0 2em 0;"><a class="button button_style_light-blue" href="{% url 'profile_follow' author.username %}">Подписаться на автора</a></p>
+                <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto" name="subscribe" data-out>Подписаться на автора</button></p>
             </div>
+            {% endif %}
             {% endif %}
         {% endif %}
 

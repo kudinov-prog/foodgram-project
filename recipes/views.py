@@ -36,6 +36,14 @@ def index(request):
         )
 
 
+class IndexListView(ListView):
+    paginate_by = 6
+    template_name = 'index.html'
+    context_object_name = 'index'
+    def get_queryset(self):
+        recipes = Recipe.objects.all()
+        return recipes
+
 @login_required
 def new_recipe(request):
     if request.method == 'POST':
@@ -52,13 +60,9 @@ def new_recipe(request):
 
 def recipe_view(request, recipe_slug):
     recipe = get_object_or_404(Recipe, slug=recipe_slug)
-    try:
-        Follow.objects.get(author=recipe.author, user=request.user)
-        following = True
-    except:
-        following = False
+    
     return render(
-        request, 'recipe.html', {'recipe': recipe, 'following': following}
+        request, 'recipe.html', {'recipe': recipe}
     )
 
 
@@ -68,14 +72,9 @@ def profile(request, username):
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    try:
-        Follow.objects.get(author=author, user=request.user)
-        following = True
-    except:
-        following = False
     return render(request, 'profile.html',
                   {'page': page, 'paginator': paginator,
-                   'author': author, 'following': following})
+                   'author': author})
 
 
 class FollowListView(LoginRequiredMixin, ListView):
@@ -110,6 +109,8 @@ class ShoppingListView(LoginRequiredMixin, ListView):
         return recipe_list
 
 
+
+# delete
 @login_required
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)

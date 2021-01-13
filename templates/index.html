@@ -14,7 +14,6 @@
 <body class="body">
 
     {% include 'includes/nav.html' %}
-
     <main class="main container">
         <div class="main__header">
             <h1 class="main__title">Рецепты</h1>
@@ -22,12 +21,12 @@
         </div>
         <div class="card-list">
             {% block content %}
-                {% for recipe in page %}
+                {% for recipe in index %}
                     {% include 'includes/recipe_card.html' with page=page %}
                 {% endfor %}
             {% endblock %}
         </div>
-        {% if page.has_other_pages %}
+        {% if page_obj.has_other_pages %}
             {% include "includes/paginator.html" with items=page paginator=paginator %}
         {% endif %}
     </main>
@@ -35,14 +34,16 @@
     
 
 <script src="{% static 'js/components/MainCards.js' %}"></script>
+
 <script src="{% static 'js/components/Purchases.js' %}"></script>
 <script src="{% static 'js/components/Favorites.js' %}"></script>
+
 <script src="{% static 'js/config/config.js' %}"></script>
 <script src="{% static 'js/components/CardList.js' %}"></script>
 <script src="{% static 'js/components/Header.js' %}"></script>
+
 <script src="{% static 'js/api/Api.js' %}"></script>
 <script src="{% static 'indexNotAuth.js' %}"></script>
 <script src="{% static 'indexAuth.js' %}"></script>
-
 </body>
 </html>

@@ -44,6 +44,7 @@ class IndexListView(ListView):
         recipes = Recipe.objects.all()
         return recipes
 
+
 @login_required
 def new_recipe(request):
     if request.method == 'POST':
@@ -77,7 +78,17 @@ def profile(request, username):
                    'author': author})
 
 
+class ProfileListView(LoginRequiredMixin, ListView): #допилить!!!
+    paginate_by = 6
+    template_name = 'profile.html'
+    context_object_name = 'profile'
+    def get_queryset(self):
+        author = get_object_or_404(User, username=self.kwargs.get('username'))
+
+
 class FollowListView(LoginRequiredMixin, ListView):
+    """ Вывод страницы с подписками
+    """
     paginate_by = 6
     template_name = 'follow.html'
     context_object_name = 'follow'
@@ -89,6 +100,8 @@ class FollowListView(LoginRequiredMixin, ListView):
 
 
 class FavoriteListView(LoginRequiredMixin, ListView):
+    """ Вывод страницы с избранными рецептами
+    """
     paginate_by = 6
     template_name = 'favorite.html'
     context_object_name = 'favorite'
@@ -100,6 +113,8 @@ class FavoriteListView(LoginRequiredMixin, ListView):
 
 
 class ShoppingListView(LoginRequiredMixin, ListView):
+    """ Вывод страницы со списком покупок
+    """
     template_name = 'shopping_list.html'
     context_object_name = 'shopping_list'
     def get_queryset(self):
@@ -107,20 +122,3 @@ class ShoppingListView(LoginRequiredMixin, ListView):
         shopper = user.shopper.all().values_list('recipe_id', flat=True)
         recipe_list = Recipe.objects.filter(id__in=list(shopper))
         return recipe_list
-
-
-
-# delete
-@login_required
-def profile_follow(request, username):
-    author = get_object_or_404(User, username=username)
-    if not request.user == author:
-        Follow.objects.get_or_create(user=request.user, author=author)
-    return redirect('follow_index', username=username)
-
-
-@login_required
-def profile_unfollow(request, username):
-    author = get_object_or_404(User, username=username)
-    Follow.objects.filter(user=request.user, author=author).delete()
-    return redirect('follow_index', username=username)

@@ -18,7 +18,7 @@ class Favorites(LoginRequiredMixin, View):
         recipe_id = req_.get('id', None)
         if recipe_id is not None:
             recipe = get_object_or_404(Recipe, id=recipe_id)
-            created = Favorite.objects.get_or_create(
+            _, created = Favorite.objects.get_or_create(
                 user=request.user, recipe=recipe
             )
             if created:
@@ -35,9 +35,6 @@ class Favorites(LoginRequiredMixin, View):
 class Follows(LoginRequiredMixin, View):
     """ Функция добавления/ удаления подписок
     """
-    def get_queryset(self):
-        pass
-
     def post(self, request):
         req_ = json.loads(request.body)
         author_id = req_.get('id', None)
@@ -45,8 +42,7 @@ class Follows(LoginRequiredMixin, View):
             author = get_object_or_404(User, id=author_id)
             if request.user == author:
                 return JsonResponse({'success': False})
-
-            follow, created = Follow.objects.get_or_create(
+            _, created = Follow.objects.get_or_create(
                 user=request.user, author=author
             )
             if created:
@@ -58,6 +54,32 @@ class Follows(LoginRequiredMixin, View):
         author = get_object_or_404(User, id=author_id)
         removed = Follow.objects.filter(
             user=request.user, author=author
+            ).delete()
+        if removed:
+            return JsonResponse({'success': True})
+        return JsonResponse({'success': False})
+
+
+class Purchases(LoginRequiredMixin, View):
+    """ Функция добавления/ удаления рецептов в список покупок
+    """
+    def post(self, request):
+        req_ = json.loads(request.body)
+        recipe_id = req_.get('id', None)
+        if recipe_id is not None:
+            recipe = get_object_or_404(Recipe, id=recipe_id)
+            _, created = ShoppingList.objects.get_or_create(
+                user=request.user, recipe=recipe
+            )
+            if created:
+                return JsonResponse({'success': True})
+            return JsonResponse({'success': False})
+        return JsonResponse({'success': False}, status=400)
+
+    def delete(self, request, recipe_id):
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        removed = ShoppingList.objects.filter(
+            user=request.user, recipe=recipe
             ).delete()
         if removed:
             return JsonResponse({'success': True})

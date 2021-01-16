@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 
 from recipes.models import (
-    User, Recipe, Follow, Favorite, Ingredient, ShoppingList
+    User, Recipe, Follow, Favorite, ShoppingList
 )
 
 
@@ -27,7 +27,9 @@ class Favorites(LoginRequiredMixin, View):
         return JsonResponse({'success': False}, status=400)
 
     def delete(self, request, recipe_id):
-        recipe = get_object_or_404(Favorite, recipe=recipe_id, user=request.user)
+        recipe = get_object_or_404(
+            Favorite, recipe=recipe_id, user=request.user
+        )
         recipe.delete()
         return JsonResponse({'success': True})
 

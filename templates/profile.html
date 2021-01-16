@@ -36,7 +36,7 @@
 
         <div class="card-list" >
             {% block content %}
-            {% for recipe in page %}
+            {% for recipe in profile %}
                 {% include 'includes/recipe_card.html' with page=page %}
             {% endfor %}
             {% endblock %}

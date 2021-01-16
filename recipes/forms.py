@@ -1,5 +1,6 @@
 from django import forms
-from .models import Recipe, Ingredient, RecipeIngredient
+from django.forms.widgets import CheckboxSelectMultiple
+from .models import Recipe, Tag
 
 
 class RecipeForm(forms.ModelForm):
@@ -7,11 +8,7 @@ class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
         fields = [
-            'title', 'tags', 'ingredients', 'duration', 'description', 'image', 'slug'
+            'title', 'image', 'description', 'tags', 'duration',
+            
             ]
-        #labels = {'group': 'Группа', 'text': 'Текст', 'image': 'Картинка'}
-        #help_texts = {
-            #'group': 'Если знаете тематику, то выберите группу!',
-            #'text': 'Постарайтесь выкладывать годный контент!',
-            #'image': 'Выберите картинку!'
-            #}
+        widgets = {'tags': forms.CheckboxSelectMultiple(), }

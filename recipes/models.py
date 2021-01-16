@@ -10,6 +10,8 @@ class Tag(models.Model):
     title = models.CharField(
         max_length=50, verbose_name="Тег"
     )
+    slug = models.SlugField(blank=True)
+    checkbox_style = models.CharField(max_length=15, blank=True)
 
     def __str__(self):
         return self.title
@@ -45,7 +47,8 @@ class Recipe(models.Model):
         verbose_name="Описание"
     )
     ingredients = models.ManyToManyField(
-        Ingredient, through="RecipeIngredient", through_fields=('recipe', 'ingredient')
+        Ingredient, through="RecipeIngredient",
+        through_fields=('recipe', 'ingredient')
     )
     tags = models.ManyToManyField(
         Tag, verbose_name='Теги'
@@ -66,7 +69,7 @@ class Recipe(models.Model):
 
     class Meta:
         ordering = ('-pub_date',)
-    
+
     def save(self,  *args, **kwargs):
         self.slug = slugify(self.title)
         return super(Recipe, self).save(*args, **kwargs)

@@ -5,7 +5,7 @@ from .views import shoplist_download
 
 urlpatterns = [
     path("", views.IndexListView.as_view(), name="index"),
-    path("new/", views.new_recipe, name="new_recipe"),
+    path("new/", views.recipe_add, name="new_recipe"),
     # path('new/', RecipeCreateFormView.as_view(), name='new_recipe'),
     path('recipe/<slug:slug>/', views.RecipeDetailView.as_view(),
          name='recipe'),

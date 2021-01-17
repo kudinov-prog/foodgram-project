@@ -16,7 +16,6 @@
               {% else %}
               <ul class="nav__items list">
                   {%if request.resolver_match.view_name == 'index' %}<li class="nav__item nav__item_active">{% else %}<li class="nav__item">{% endif %}<li class="nav__item nav__item_active"><a href="{% url 'index' %}" class="nav__link link">Рецепты</a></li>
-                  <!--{%if request.resolver_match.view_name == 'shopping_list_index' %}<li class="nav__item nav__item_active">{% else %}--><li class="nav__item"><!--{% endif %}--><li class="nav__item nav__item_disabled"><a href="#" class="nav__link link">Список покупок</a></li>
               </ul>
               <ul class="nav__items list">
                   {% if request.resolver_match.view_name == 'LoginView' %}<li class="nav__item nav__item_active">{% else %}<li class="nav__item">{% endif %}<li class="nav__item"><a href="{% url 'login' %}" class="nav__link link">Войти</a></li>

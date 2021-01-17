@@ -7,7 +7,8 @@ from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 
 from .forms import RecipeForm
-from .models import Recipe, User, RecipeIngredient
+from .models import Recipe, User, RecipeIngredient, Ingredient
+from .utils import get_ingredients
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView
@@ -28,20 +29,6 @@ def server_error(request):
         "misc/500.html",
         status=500
         )
-
-
-@login_required
-def new_recipe(request):
-    if request.method == 'POST':
-        form = RecipeForm(request.POST)
-        if form.is_valid():
-            recipe = form.save(commit=False)
-            recipe.author = request.user
-            recipe.save()
-            return redirect('index')
-        return render(request, 'new_recipe.html', {'form': form})
-    form = RecipeForm()
-    return render(request, 'new_recipe.html', {'form': form})
 
 
 class IndexListView(ListView):
@@ -148,6 +135,34 @@ def shoplist_download(request):
     return response
 
 
+@login_required
+def recipe_add(request):
+    """ Страница с формой добавления нового рецепта
+    """
+    user = User.objects.get(username=request.user)
+    if request.method == "POST":
+        form = RecipeForm(request.POST or None, files=request.FILES or None)
+        ingredients = get_ingredients(request)
+        if not ingredients:
+            form.add_error(None, "Добавьте ингредиенты")
+        elif form.is_valid():
+            recipe = form.save(commit=False)
+            recipe.author = user
+            recipe.save()
+            for ing_name, amount in ingredients.items():
+                ingredient = get_object_or_404(Ingredient, title=ing_name)
+                recipe_ing = RecipeIngredient(
+                    recipe=recipe, ingredient=ingredient, amount=amount
+                )
+                recipe_ing.save()
+            form.save_m2m()
+            return redirect("index")
+    else:
+        form = RecipeForm()
+    return render(request, "new_recipe.html", {"form": form})
+
+
+"""
 class RecipeCreateFormView(LoginRequiredMixin, CreateView):
 
     form_class = RecipeForm
@@ -172,9 +187,4 @@ class RecipeCreateFormView(LoginRequiredMixin, CreateView):
         form.save_m2m()
 
         return redirect(self.success_url)
-
-    """def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({'all_tags': get_all_tags()})
-
-        return context"""
+"""

@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 
 from recipes.models import (
-    User, Recipe, Follow, Favorite, ShoppingList
+    User, Recipe, Follow, Favorite, ShoppingList, Ingredient
 )
 
 
@@ -86,3 +86,16 @@ class Purchases(LoginRequiredMixin, View):
         if removed:
             return JsonResponse({'success': True})
         return JsonResponse({'success': False})
+
+
+class Ingredients(LoginRequiredMixin, View):
+    """ Функция получения списка ингредиентов
+    """
+    def get(self, request):
+        text = request.GET["query"]
+        ingredients = list(
+            Ingredient.objects.filter(title__icontains=text).values(
+                "title", "unit"
+            )
+        )
+        return JsonResponse(ingredients, safe=False)

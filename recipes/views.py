@@ -112,31 +112,23 @@ class RecipeDetailView(DetailView):
 
 @login_required
 def shoplist_download(request):
-    """ Скачивает список ингридиентов для рецепта из списка покупок
-        в формате txt
-    """
     user = request.user
     shopping = user.shopper.all().values_list('recipe_id', flat=True)
-    ingredients_amount = RecipeIngredient.objects.values(
+    ingredients = RecipeIngredient.objects.values(
         'ingredient_id__title', 'ingredient_id__unit').filter(
         recipe_id__in=list(shopping)).annotate(
         total=Sum('amount')).order_by('ingredient')
-    complete_name = f'Ингридиенты_{user}.txt'
-    with open(complete_name, 'w') as f:
-        for i in list(ingredients_amount):
-            f.write(
-                f'- {i["ingredient_id__title"]} '
-                f'({i["ingredient_id__unit"]}) - {i["total"]} \n'
-            )
-    f = open(complete_name, 'r')
-    response = HttpResponse(content_type='text/plain')
-    response['Content-Disposition'] = f'attachment; filename={complete_name}'
-    os.remove(complete_name)
+    file_data = ""
+    for item in ingredients:
+        line = " ".join(str(value) for value in item.values())
+        file_data += line + "\n"
+    response = HttpResponse(file_data, content_type="application/text charset=utf-8")
+    response["Content-Disposition"] = 'attachment; filename="ShoppingList.txt"'
     return response
 
 
 @login_required
-def recipe_add(request):
+def new_recipe(request):
     """ Страница с формой добавления нового рецепта
     """
     user = User.objects.get(username=request.user)
@@ -160,6 +152,36 @@ def recipe_add(request):
     else:
         form = RecipeForm()
     return render(request, "new_recipe.html", {"form": form})
+
+
+@login_required
+def recipe_edit(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    if request.user != recipe.author:
+        return redirect("index")
+    if request.method == "POST":
+        form = RecipeForm(
+            request.POST or None, files=request.FILES or None, instance=recipe
+        )
+        ingredients = get_ingredients(request)
+        if form.is_valid():
+            RecipeIngredient.objects.filter(recipe=recipe).delete()
+            recipe = form.save(commit=False)
+            recipe.author = request.user
+            recipe.save()
+            for item in ingredients:
+                RecipeIngredient.objects.create(
+                    ingredient=Ingredient.objects.get(title=f"{item}"),
+                    recipe=recipe,
+                )
+            form.save_m2m()
+        return redirect("index")
+    form = RecipeForm(
+        request.POST or None, files=request.FILES or None, instance=recipe
+    )
+    return render(
+        request, "recipe_edit.html", {"form": form, "recipe": recipe},
+    )
 
 
 """
@@ -187,4 +209,29 @@ class RecipeCreateFormView(LoginRequiredMixin, CreateView):
         form.save_m2m()
 
         return redirect(self.success_url)
+
+
+@login_required
+def shoplist_download_1(request):
+    Скачивает список ингридиентов для рецепта из списка покупок
+        в формате txt
+    
+    user = request.user
+    shopping = user.shopper.all().values_list('recipe_id', flat=True)
+    ingredients_amount = RecipeIngredient.objects.values(
+        'ingredient_id__title', 'ingredient_id__unit').filter(
+        recipe_id__in=list(shopping)).annotate(
+        total=Sum('amount')).order_by('ingredient')
+    complete_name = f'Ингридиенты_{user}.txt'
+    with open(complete_name, 'w') as f:
+        for i in list(ingredients_amount):
+            f.write(
+                f'- {i["ingredient_id__title"]} '
+                f'({i["ingredient_id__unit"]}) - {i["total"]} \n'
+            )
+    f = open(complete_name, 'r')
+    response = HttpResponse(content_type='text/plain')
+    response['Content-Disposition'] = f'attachment; filename={complete_name}'
+    os.remove(complete_name)
+    return response        
 """

@@ -11,7 +11,7 @@ from .models import Recipe, User, RecipeIngredient, Ingredient
 from .utils import get_ingredients
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, View
 
 
 def page_not_found(request, exception):
@@ -39,7 +39,10 @@ class IndexListView(ListView):
     context_object_name = 'index'
 
     def get_queryset(self):
+        tags_filter = self.request.GET.getlist("filters")
         recipes = Recipe.objects.all()
+        if tags_filter:
+            recipes = recipes.filter(tags__slug__in=tags_filter).distinct().all()
         return recipes
 
 
@@ -65,9 +68,12 @@ class FavoriteListView(LoginRequiredMixin, ListView):
     context_object_name = 'favorite'
 
     def get_queryset(self):
+        tags_filter = self.request.GET.getlist("filters")
         user = self.request.user
         favorites = user.adder_user.all().values_list('recipe_id', flat=True)
         fav_recipes = Recipe.objects.filter(id__in=list(favorites))
+        if tags_filter:
+            fav_recipes = fav_recipes.filter(tags__slug__in=tags_filter).distinct().all()
         return fav_recipes
 
 
@@ -92,8 +98,11 @@ class ProfileListView(ListView):
     context_object_name = 'profile'
 
     def get_queryset(self):
+        tags_filter = self.request.GET.getlist("filters")
         author = get_object_or_404(User, username=self.kwargs.get('username'))
         author_recipes = Recipe.objects.filter(author=author)
+        if tags_filter:
+            author_recipes = author_recipes.filter(tags__slug__in=tags_filter).distinct().all()
         return author_recipes
 
     def get_context_data(self, **kwargs):
@@ -184,54 +193,54 @@ def recipe_edit(request, recipe_id):
     )
 
 
-"""
-class RecipeCreateFormView(LoginRequiredMixin, CreateView):
-
-    form_class = RecipeForm
-    template_name = 'new_recipe.html'
-    success_url = 'index'
-
-    def form_valid(self, form):
-        instance = form.save(commit=False)
-        instance.author = self.request.user
-        form_data = form.data
-        ingredients = [
-            key for key in form_data if key.startswith('nameIngredient_')
-        ]
-        if not ingredients:
-            form.add_error(
-                'description',
-                'Необходимо указать хотя бы один ингредиент для рецепта'
+class RecipeEditView(LoginRequiredMixin, View):
+    """ Редактирование рецепта
+    """
+    def get(self, request, slug):
+        recipe = get_object_or_404(Recipe, slug=slug)
+        if request.user != recipe.author:
+            return redirect(
+                'recipe', slug=recipe.slug
             )
-            return self.form_invalid(form)
-        instance.save()
-        create_ingredients_amounts(instance, form_data)
-        form.save_m2m()
-
-        return redirect(self.success_url)
+        form = RecipeForm(instance=recipe)
+        return render(
+            request,
+            'recipes/recipe_create.html',
+            {
+                'form': form,
+                'recipe': recipe,
+            }
+        )
+    def post(self, request, slug):
+        recipe = get_object_or_404(Recipe, slug=slug)
+        if request.user != recipe.author:
+            return redirect('index')
+        ingridients = recipe.ingridients.all()
+        form = RecipeForm(request.POST, request.FILES, instance=recipe)
+        ingridients_names = request.POST.getlist('nameIngredient')
+        ingridients_values = request.POST.getlist('valueIngredient')
+        all_ingridients = collect_ingredients(
+            ingridients_names,
+            ingridients_values
+        )
+        if form.is_valid():
+            form.save()
+            change_ingredients(all_ingridients, ingridients, recipe)
+        else:
+            return render(
+                request,
+                'recipes/recipe_create.html',
+                {
+                    'form': form,
+                    'recipe': recipe,
+                }
+            )
+        return redirect('recipe_url', slug=recipe.slug)
 
 
 @login_required
-def shoplist_download_1(request):
-    Скачивает список ингридиентов для рецепта из списка покупок
-        в формате txt
-    
-    user = request.user
-    shopping = user.shopper.all().values_list('recipe_id', flat=True)
-    ingredients_amount = RecipeIngredient.objects.values(
-        'ingredient_id__title', 'ingredient_id__unit').filter(
-        recipe_id__in=list(shopping)).annotate(
-        total=Sum('amount')).order_by('ingredient')
-    complete_name = f'Ингридиенты_{user}.txt'
-    with open(complete_name, 'w') as f:
-        for i in list(ingredients_amount):
-            f.write(
-                f'- {i["ingredient_id__title"]} '
-                f'({i["ingredient_id__unit"]}) - {i["total"]} \n'
-            )
-    f = open(complete_name, 'r')
-    response = HttpResponse(content_type='text/plain')
-    response['Content-Disposition'] = f'attachment; filename={complete_name}'
-    os.remove(complete_name)
-    return response        
-"""
+def recipe_delete(request, recipe_slug):
+    recipe = get_object_or_404(Recipe, slug=recipe_slug)
+    if request.user == recipe.author:
+        recipe.delete()
+    return redirect("index")

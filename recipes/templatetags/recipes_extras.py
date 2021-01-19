@@ -6,12 +6,18 @@ from recipes.models import Follow, Favorite, ShoppingList
 register = template.Library()
 
 
-@register.filter(name='get_filter_values')
+@register.filter #нужен
+def addclass(field, css):
+    return field.as_widget(attrs={"class": css})
+
+
+
+@register.filter(name='get_filter_values') #нужен
 def get_values(value):
     return value.getlist('filters')
 
 
-@register.filter(name='get_filter_link')
+@register.filter(name='get_filter_link') #нужен
 def get_filter_link(request, tag):
     new_request = request.GET.copy()
 
@@ -37,16 +43,16 @@ def shopping_count(request, user_id):
     return ShoppingList.objects.filter(user=user_id).count()
 
 
-@register.filter(name='shopping_recipe')
+@register.filter(name='shopping_recipe') # нужен
 def shopping_recipe(recipe, user):
     return ShoppingList.objects.filter(user=user, recipe=recipe).exists()
 
 
-@register.filter(name='is_following')
+@register.filter(name='is_following') #нужен
 def is_following(author, user):
     return Follow.objects.filter(user=user, author=author).exists()
 
 
-@register.filter(name='is_favorite')
+@register.filter(name='is_favorite') #нужен
 def is_favorite(recipe, user):
     return Favorite.objects.filter(user=user, recipe=recipe).exists()

@@ -1,4 +1,7 @@
 <!doctype html>
+{% load static %}
+{% load recipes_extras %}
+{% csrf_token %}
 <html lang="en">
 
 <head>
@@ -7,40 +10,46 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Мои подписки</title>
-    {% load static %}
     <link rel="stylesheet" href="{% static 'pages/myFollow.css' %}">
 </head>
 
 <body class="body">
 
-{% include 'includes/nav.html' %}
-{% csrf_token %}
-<main class="main container">
-    <div class="main__header">
-        <h1 class="main__title">Мои подписки</h1>
-    </div>
-    <div class="card-list">
-        <!-- Карточки авторов -->
-        {% for chef in follow %}
-            {% include "includes/author_card.html" %}
-        {% endfor %}
-    </div>
+    <header class="header">
+    {% include 'includes/nav.html' %}
+    </header>
 
-    {% if page_obj.has_other_pages %}
-        {% include "includes/paginator.html" with items=page paginator=paginator %}
-    {% endif %}
+    <main class="main container">
 
-</main>
+        <div class="main__header">
+            {% block title %}
+            <h1 class="main__title">Мои подписки</h1>
+            {% endblock %}
+        </div>
 
-{% include 'includes/footer.html' %}
+        <div class="card-list">
+            {% block content %}
+                {% for chef in follow %}
+                    {% include "includes/author_card.html" %}
+                {% endfor %}
+            {% endblock %}
+        </div>
 
-<script src="{% static 'js/config/config.js' %}"></script>
-<script src="{% static 'js/components/MainCards.js' %}"></script>
-<script src="{% static 'js/components/MyFollow.js' %}"></script>
-<script src="{% static 'js/components/Subscribe.js' %}"></script>
-<script src="{% static 'js/components/Header.js' %}"></script>
-<script src="{% static 'js/api/Api.js' %}"></script>
-<script src="{% static 'myFollow.js' %}"></script>
+        {% if page_obj.has_other_pages %}
+            {% include "includes/paginator.html" with items=page paginator=paginator %}
+        {% endif %}
+
+    </main>
+
+    {% include 'includes/footer.html' %}
+
+    <script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/MainCards.js' %}"></script>
+    <script src="{% static 'js/components/MyFollow.js' %}"></script>
+    <script src="{% static 'js/components/Subscribe.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'myFollow.js' %}"></script>
 
 </body>
 </html>

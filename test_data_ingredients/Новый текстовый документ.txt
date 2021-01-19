@@ -1,5 +1,0 @@
-select * from recipes_ingredient;
-
-COPY recipes_ingredient(title, unit) FROM 'D:\Dev\5_FINAL\foodgram-project\test_data_ingredients\ingredients.csv' DELIMITER ',' CSV;
-
-select * from recipes_ingredient where title=авокадо;

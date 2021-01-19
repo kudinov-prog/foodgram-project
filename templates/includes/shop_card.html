@@ -1,7 +1,5 @@
 <li class="shopping-list__item" data-id="{{ recipe.id }}">
     <div class="recipe recipe_reverse">
-        {% load static recipes_extras %}
-        {% csrf_token %}
         {% load thumbnail %}
         {% thumbnail recipe.image "364x240" crop="center" upscale=True as im %}
         <img src="{{ im.url }}" alt="{{ recipe.title }}" class="recipe__image recipe__image_big">
@@ -11,5 +9,3 @@
     </div>
     <a href="#" class="shopping-list__button link" name="purchases">Удалить</a>
 </li>
-
-<!--<button class="button button_style_light-blue" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button>-->

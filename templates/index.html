@@ -1,4 +1,7 @@
 <!doctype html>
+{% load static %}
+{% load recipes_extras %}
+{% csrf_token %}
 <html lang="en">
 
 <head>
@@ -7,19 +10,34 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Рецепты</title>
-    {% load static %}
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
 </head>
 
 <body class="body">
 
+    <header class="header">
     {% include 'includes/nav.html' %}
+    </header>
 
     <main class="main container">
+
         <div class="main__header">
+            {% block title %}
             <h1 class="main__title">Рецепты</h1>
-            {% include 'includes/tags.html' %}
+            <ul class="tags">
+                {% for tag in all_tags %}
+                <li class="tags__item">
+                    <a id="{{ tags.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.checkbox_style }}
+                            {% if tag.slug in request.GET|get_filter_values %} tags__checkbox_active {% endif %}"
+                        href="{% url 'index' %}?{{ request|get_filter_link:tag }}">
+                    </a>
+                    <span class="tags__label">{{ tag.title }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endblock %}
         </div>
+
         <div class="card-list">
             {% block content %}
                 {% for recipe in index %}
@@ -27,24 +45,25 @@
                 {% endfor %}
             {% endblock %}
         </div>
+
         {% if page_obj.has_other_pages %}
             {% include "includes/paginator.html" with items=page paginator=paginator %}
         {% endif %}
+
     </main>
+
     {% include 'includes/footer.html' %}
     
-
-<script src="{% static 'js/components/MainCards.js' %}"></script>
-
-<script src="{% static 'js/components/Purchases.js' %}"></script>
-<script src="{% static 'js/components/Favorites.js' %}"></script>
-
-<script src="{% static 'js/config/config.js' %}"></script>
-<script src="{% static 'js/components/CardList.js' %}"></script>
-<script src="{% static 'js/components/Header.js' %}"></script>
-
-<script src="{% static 'js/api/Api.js' %}"></script>
-<script src="{% static 'indexAuth.js' %}"></script>
-<script src="{% static 'indexNotAuth.js' %}"></script>
+    <script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/MainCards.js' %}"></script>
+    <script src="{% static 'js/components/Purchases.js' %}"></script>
+    <script src="{% static 'js/components/Favorites.js' %}"></script>
+    <script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/CardList.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'indexAuth.js' %}"></script>
+    <script src="{% static 'indexNotAuth.js' %}"></script>
+    
 </body>
 </html>

@@ -65,6 +65,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 "recipes.context_processors.all_tags",
+                "recipes.context_processors.counter",
             ],
         },
     },

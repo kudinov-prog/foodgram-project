@@ -1,22 +1,20 @@
+{% load recipes_extras %}
+{% csrf_token %}
+
 <div class="card" data-id="{{ recipe.id }}">
-    {% load recipes_extras %}
-    {% csrf_token %}
     {% load thumbnail %}
     {% thumbnail recipe.image "364x240" crop="center" upscale=True as im %}
     <a href="#" class="link" target="_blank"><img src="{{ im.url }}" alt="{{ recipe.title }}" class="card__image"></a>
     {% endthumbnail %}
+
     <div class="card__body">
         <a class="card__title link" href="{% url 'recipe' recipe.slug %}" target="_blank">{{ recipe.title }}</a> <!--Ссылка на рецепт-->
         <ul class="card__items">
+            {% if recipe.tags %}
             {% for tag in recipe.tags.all %}
-            {% if tag.title == 'Обед' %}
-            <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
-            {% elif tag.title == 'Завтрак' %}
-            <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
-            {% elif tag.title == 'Ужин' %}
-            <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
-            {% endif %}
+            <li class="card__item"><span class="badge badge_style_{{ tag.checkbox_style }}">{{ tag.title }}</span>
             {% endfor %}
+            {% endif %}
         </ul>
         <div class="card__items card__items_column">
             <p class="card__text"><span class="icon-time"></span> {{ recipe.duration }} мин.</p>

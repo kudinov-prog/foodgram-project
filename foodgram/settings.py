@@ -1,6 +1,5 @@
 import os
 import environ
-from pathlib import Path
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -9,7 +8,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -24,6 +23,10 @@ INTERNAL_IPS = [
 
 
 INSTALLED_APPS = [
+    'api',
+    'recipes',
+    'users',
+    'sorl.thumbnail',
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django.contrib.admin',
@@ -32,11 +35,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'sorl.thumbnail',
-    #'debug_toolbar',
-    'users',
-    'recipes',
-    'api',
 ]
 
 MIDDLEWARE = [
@@ -47,7 +45,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'foodgram.urls'
@@ -118,6 +115,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_URL = "/auth/login/"
 LOGIN_REDIRECT_URL = "index"
 LOGOUT_REDIRECT_URL = "index"
+
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
 SITE_ID = 1
 

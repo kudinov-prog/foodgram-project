@@ -1,4 +1,3 @@
-import os
 from django.db.models import Sum
 from django.http import HttpResponse
 
@@ -42,7 +41,9 @@ class IndexListView(ListView):
         tags_filter = self.request.GET.getlist("filters")
         recipes = Recipe.objects.all()
         if tags_filter:
-            recipes = recipes.filter(tags__slug__in=tags_filter).distinct().all()
+            recipes = recipes.filter(
+                tags__slug__in=tags_filter
+            ).distinct().all()
         return recipes
 
 
@@ -73,7 +74,9 @@ class FavoriteListView(LoginRequiredMixin, ListView):
         favorites = user.adder_user.all().values_list('recipe_id', flat=True)
         fav_recipes = Recipe.objects.filter(id__in=list(favorites))
         if tags_filter:
-            fav_recipes = fav_recipes.filter(tags__slug__in=tags_filter).distinct().all()
+            fav_recipes = fav_recipes.filter(
+                tags__slug__in=tags_filter
+            ).distinct().all()
         return fav_recipes
 
 
@@ -102,7 +105,9 @@ class ProfileListView(ListView):
         author = get_object_or_404(User, username=self.kwargs.get('username'))
         author_recipes = Recipe.objects.filter(author=author)
         if tags_filter:
-            author_recipes = author_recipes.filter(tags__slug__in=tags_filter).distinct().all()
+            author_recipes = author_recipes.filter(
+                tags__slug__in=tags_filter
+                ).distinct().all()
         return author_recipes
 
     def get_context_data(self, **kwargs):
@@ -131,7 +136,9 @@ def shoplist_download(request):
     for item in ingredients:
         line = " ".join(str(value) for value in item.values())
         file_data += line + "\n"
-    response = HttpResponse(file_data, content_type="application/text charset=utf-8")
+    response = HttpResponse(
+        file_data, content_type="application/text charset=utf-8"
+    )
     response["Content-Disposition"] = 'attachment; filename="ShoppingList.txt"'
     return response
 
@@ -193,7 +200,7 @@ def recipe_edit(request, recipe_id):
     )
 
 
-class RecipeEditView(LoginRequiredMixin, View):
+class RecipeEditView(LoginRequiredMixin, View): # не работает
     """ Редактирование рецепта
     """
     def get(self, request, slug):
@@ -211,6 +218,7 @@ class RecipeEditView(LoginRequiredMixin, View):
                 'recipe': recipe,
             }
         )
+
     def post(self, request, slug):
         recipe = get_object_or_404(Recipe, slug=slug)
         if request.user != recipe.author:

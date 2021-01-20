@@ -11,7 +11,6 @@ def addclass(field, css):
     return field.as_widget(attrs={"class": css})
 
 
-
 @register.filter(name='get_filter_values') #нужен
 def get_values(value):
     return value.getlist('filters')

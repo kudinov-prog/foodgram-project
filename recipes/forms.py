@@ -1,5 +1,5 @@
 from django import forms
-from .models import Recipe, Ingredient
+from .models import Recipe
 
 
 class RecipeForm(forms.ModelForm):
@@ -8,8 +8,8 @@ class RecipeForm(forms.ModelForm):
         model = Recipe
         fields = [
             'title', 'image', 'description', 'tags', 'duration',
-            
-            ]
+
+        ]
         widgets = {
-            'tags': forms.CheckboxSelectMultiple(), 
+            'tags': forms.CheckboxSelectMultiple(),
             }

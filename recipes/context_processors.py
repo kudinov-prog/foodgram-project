@@ -1,5 +1,6 @@
 from .models import ShoppingList, Tag
 
+
 def counter(request):
     if request.user.is_authenticated:
         count = ShoppingList.objects.filter(user=request.user).count()

@@ -13,23 +13,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, View
 
 
-def page_not_found(request, exception):
-    return render(
-        request,
-        "misc/404.html",
-        {"path": request.path},
-        status=404
-    )
-
-
-def server_error(request):
-    return render(
-        request,
-        "misc/500.html",
-        status=500
-        )
-
-
 class IndexListView(ListView):
     """ Вывод главной страницы с рецептами
     """
@@ -172,6 +155,8 @@ def new_recipe(request):
 
 @login_required
 def recipe_edit(request, recipe_id):
+    """ Страница с формой редактирования рецепта
+    """
     recipe = get_object_or_404(Recipe, id=recipe_id)
     if request.user != recipe.author:
         return redirect("index")
@@ -200,55 +185,28 @@ def recipe_edit(request, recipe_id):
     )
 
 
-class RecipeEditView(LoginRequiredMixin, View): # не работает
-    """ Редактирование рецепта
-    """
-    def get(self, request, slug):
-        recipe = get_object_or_404(Recipe, slug=slug)
-        if request.user != recipe.author:
-            return redirect(
-                'recipe', slug=recipe.slug
-            )
-        form = RecipeForm(instance=recipe)
-        return render(
-            request,
-            'recipes/recipe_create.html',
-            {
-                'form': form,
-                'recipe': recipe,
-            }
-        )
-
-    def post(self, request, slug):
-        recipe = get_object_or_404(Recipe, slug=slug)
-        if request.user != recipe.author:
-            return redirect('index')
-        ingridients = recipe.ingridients.all()
-        form = RecipeForm(request.POST, request.FILES, instance=recipe)
-        ingridients_names = request.POST.getlist('nameIngredient')
-        ingridients_values = request.POST.getlist('valueIngredient')
-        all_ingridients = collect_ingredients(
-            ingridients_names,
-            ingridients_values
-        )
-        if form.is_valid():
-            form.save()
-            change_ingredients(all_ingridients, ingridients, recipe)
-        else:
-            return render(
-                request,
-                'recipes/recipe_create.html',
-                {
-                    'form': form,
-                    'recipe': recipe,
-                }
-            )
-        return redirect('recipe_url', slug=recipe.slug)
-
-
 @login_required
 def recipe_delete(request, recipe_slug):
+    """ Удаление рецепта
+    """
     recipe = get_object_or_404(Recipe, slug=recipe_slug)
     if request.user == recipe.author:
         recipe.delete()
     return redirect("index")
+
+
+def page_not_found(request, exception):
+    return render(
+        request,
+        "misc/404.html",
+        {"path": request.path},
+        status=404
+    )
+
+
+def server_error(request):
+    return render(
+        request,
+        "misc/500.html",
+        status=500
+        )

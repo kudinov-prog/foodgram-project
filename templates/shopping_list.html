@@ -1,52 +1,38 @@
-<!doctype html>
-{% load static %}
+{% extends 'base.html' %} 
 {% load recipes_extras %}
-{% csrf_token %}
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Список покупок</title>
-    <link rel="stylesheet" href="{% static 'pages/shopList.css' %}">
-</head>
+{% block title %} 
+    Список покупок 
+{% endblock %}
 
-<body class="body">
+{% load static %} 
+{% block css %}
+    <link rel="stylesheet" href="{% static 'pages/shopList.css' %}" />
+{% endblock %} 
 
-    <header class="header">
-    {% include 'includes/nav.html' %}
-    </header>
-
-<main class="main container">
-
+{% block header %}
     <div class="main__header">
-        {% block title %}
-        <h1 class="main__title">Список покупок</h1>
-        {% endblock %}
+    <h1 class="main__title">Список покупок</h1>
     </div>
+{% endblock %}
 
-    <div class="card-list card-list_column">
-        {% block content %}
-        <ul class="shopping-list">
-            {% for recipe in shopping_list %}
+{% block content %}
+<div class="card-list card-list_column">
+    {% csrf_token %}
+    <ul class="shopping-list">
+        {% for recipe in shopping_list %}
                 {% include "includes/shop_card.html" %}
-            {% endfor %}
-        </ul>
-        <a href="{% url 'shoplist_download' %}"><button class="button button_style_blue">Скачать список</button></a>
-        {% endblock %}
-    </div>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'shoplist_download' %}"><button class="button button_style_blue">Скачать список</button></a>
+</div>
 
-</main>
+{% endblock %} 
 
-{% include 'includes/footer.html' %}
-
+{% block js %}
 <script src="{% static 'js/config/config.js' %}"></script>
 <script src="{% static 'js/components/Header.js' %}"></script>
 <script src="{% static 'js/components/ShopList.js' %}"></script>
 <script src="{% static 'js/api/Api.js' %}"></script>
 <script src="{% static 'shopList.js' %}"></script>
-
-</body>
-</html>
+{% endblock %} 

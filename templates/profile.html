@@ -1,63 +1,62 @@
-<!doctype html>
-{% load static %}
+{% extends 'base.html' %} 
 {% load recipes_extras %}
-{% csrf_token %}
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ author.get_full_name }}</title>
-    <link rel="stylesheet" href="{% static 'pages/index.css' %}">
-</head>
+{% block title %} 
+    {{ author.get_full_name }} 
+{% endblock %}
 
-<body class="body">
+{% load static %} 
+{% block css %}
+    <link rel="stylesheet" href="{% static 'pages/index.css' %}" />
+{% endblock %} 
 
-    <header class="header">
-    {% include 'includes/nav.html' %}
-    </header>
+{% block header %}
+    <div class="main__header">
+    <h1 class="main__title">{{ author.get_full_name }}</h1>
+    <ul class="tags">
+        {% for tag in all_tags %}
+        <li class="tags__item">
+            <a id="{{ tags.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.checkbox_style }}
+                    {% if tag.slug in request.GET|get_filter_values %} tags__checkbox_active {% endif %}"
+                href="{% url 'profile' author.username %}?{{ request|get_filter_link:tag }}">
+            </a>
+            <span class="tags__label">{{ tag.title }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+    </div>
 
-    <main class="main container">
-
-        <div class="main__header">
-            {% block title %}
-            <h1 class="main__title">{{ author.get_full_name }}</h1>
-            {% include 'includes/tags.html' %}
-            {% endblock %}
+    {% if request.user.is_authenticated %}
+        {% if request.user != author %}
+        {% if author|is_following:request.user %}
+        <div class="author-subscribe" data-author="{{ author.id }}">
+            <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto" name="subscribe" >Отписаться от автора</button></p>
         </div>
-        
-        {% if request.user.is_authenticated %}
-            {% if request.user != author %}
-            {% if author|is_following:request.user %}
-            <div class="author-subscribe" data-author="{{ author.id }}">
-                <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto" name="subscribe" >Отписаться от автора</button></p>
-            </div>
-            {% else %}
-            <div class="author-subscribe" data-author="{{ author.id }}">
-                <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto" name="subscribe" data-out>Подписаться на автора</button></p>
-            </div>
-            {% endif %}
-            {% endif %}
+        {% else %}
+        <div class="author-subscribe" data-author="{{ author.id }}">
+            <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto" name="subscribe" data-out>Подписаться на автора</button></p>
+        </div>
         {% endif %}
+        {% endif %}
+    {% endif %}
 
-        <div class="card-list" >
-            {% block content %}
-            {% for recipe in profile %}
+{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    <div class="card-list">
+        {% for recipe in profile %}
                 {% include 'includes/recipe_card.html' with page=page %}
-            {% endfor %}
-            {% endblock %}
-        </div>
+        {% endfor %}
+    </div>
 
-        {% if page.has_other_pages %}
-            {% include "includes/paginator.html" with items=page paginator=paginator %}
-        {% endif %}
+{% if page_obj.has_other_pages %}
+    {% include "includes/paginator.html" with items=page paginator=paginator %}
+{% endif %}
 
-    </main>
+{% endblock %}
 
-    {% include 'includes/footer.html' %}
-
+{% block js %}
     <script src="{% static 'js/components/MainCards.js' %}"></script>
     <script src="{% static 'js/components/Purchases.js' %}"></script>
     <script src="{% static 'js/components/Favorites.js' %}"></script>
@@ -67,6 +66,4 @@
     <script src="{% static 'js/components/Header.js' %}"></script>
     <script src="{% static 'js/api/Api.js' %}"></script>
     <script src="{% static 'authorRecipe.js' %}"></script>
-
-</body>
-</html>
+{% endblock %} 

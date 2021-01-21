@@ -1,25 +1,20 @@
-<!doctype html>
-<html lang="en">
+{% extends 'base.html' %} 
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ flatpage.title }}</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'pages/index.css' %}">
-</head>
+{% block title %} 
+    {{ flatpage.title }} 
+{% endblock %}
 
-<body class="body">
-    {% include 'includes/nav.html' %}
-<main class="main container">
+{% load static %} 
+{% block css %}
+    <link rel="stylesheet" href="{% static 'pages/index.css' %}" />
+{% endblock %} 
+
+{% block header %}
     <div class="main__header">
-        <h1 class="main__title">{{ flatpage.title }}</h1>
+    <h1 class="main__title">{{ flatpage.title }}</h1>
     </div>
-    {{ flatpage.content }}
+{% endblock %}
 
-</main>
-{% include 'includes/footer.html' %}
-</body>
-</html>
+{% block content %}
+    {{ flatpage.content }}
+{% endblock %}

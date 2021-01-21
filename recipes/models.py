@@ -1,7 +1,6 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
 from slugify import slugify
-
 
 User = get_user_model()
 
@@ -25,11 +24,11 @@ class Ingredient(models.Model):
         max_length=20, verbose_name='Единица измерения', null=True
     )
 
-    def __str__(self):
-        return self.title
-
     class Meta:
         ordering = ('title',)
+
+    def __str__(self):
+        return self.title
 
 
 class Recipe(models.Model):
@@ -64,15 +63,15 @@ class Recipe(models.Model):
         null=True, verbose_name="Дата публикации"
     )
 
-    def __str__(self):
-        return self.title
-
     class Meta:
         ordering = ('-pub_date',)
 
+    def __str__(self):
+        return self.title
+
     def save(self,  *args, **kwargs):
         self.slug = slugify(self.title)
-        return super(Recipe, self).save(*args, **kwargs)
+        return super().save()
 
 
 class RecipeIngredient(models.Model):

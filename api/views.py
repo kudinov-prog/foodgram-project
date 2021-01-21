@@ -6,8 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 
 from recipes.models import (
-    User, Recipe, Follow, Favorite, ShoppingList, Ingredient
-)
+    Favorite, Follow, Ingredient, Recipe, ShoppingList, User)
 
 
 class Favorites(LoginRequiredMixin, View):
@@ -15,15 +14,13 @@ class Favorites(LoginRequiredMixin, View):
     """
     def post(self, request):
         req_ = json.loads(request.body)
-        recipe_id = req_.get('id', None)
+        recipe_id = req_.get('id')
         if recipe_id is not None:
             recipe = get_object_or_404(Recipe, id=recipe_id)
             _, created = Favorite.objects.get_or_create(
                 user=request.user, recipe=recipe
             )
-            if created:
-                return JsonResponse({'success': True})
-            return JsonResponse({'success': False})
+            return JsonResponse({'success': created})
         return JsonResponse({'success': False}, status=400)
 
     def delete(self, request, recipe_id):
@@ -39,7 +36,7 @@ class Follows(LoginRequiredMixin, View):
     """
     def post(self, request):
         req_ = json.loads(request.body)
-        author_id = req_.get('id', None)
+        author_id = req_.get('id')
         if author_id is not None:
             author = get_object_or_404(User, id=author_id)
             if request.user == author:
@@ -47,9 +44,7 @@ class Follows(LoginRequiredMixin, View):
             _, created = Follow.objects.get_or_create(
                 user=request.user, author=author
             )
-            if created:
-                return JsonResponse({'success': True})
-            return JsonResponse({'success': False})
+            return JsonResponse({'success': created})
         return JsonResponse({'success': False}, status=400)
 
     def delete(self, request, author_id):
@@ -67,15 +62,13 @@ class Purchases(LoginRequiredMixin, View):
     """
     def post(self, request):
         req_ = json.loads(request.body)
-        recipe_id = req_.get('id', None)
+        recipe_id = req_.get('id')
         if recipe_id is not None:
             recipe = get_object_or_404(Recipe, id=recipe_id)
             _, created = ShoppingList.objects.get_or_create(
                 user=request.user, recipe=recipe
             )
-            if created:
-                return JsonResponse({'success': True})
-            return JsonResponse({'success': False})
+            return JsonResponse({'success': created})
         return JsonResponse({'success': False}, status=400)
 
     def delete(self, request, recipe_id):

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 {% load static %}
-{% load user_filters %}
+{% load recipes_extras %}
 {% csrf_token %}
 
 <head>
@@ -49,7 +49,7 @@
                                 {% for tag in all_tags %}
                                     <div class="tags__item">
                                         <input type="checkbox" name="tags" value="{{ tag.slug }}" id="id_{{ tag.slug }}"
-                                            class="tags__checkbox tags__checkbox_style_{{ tag.checkbox_style }}" {% if tag.id in form.tags.value %}checked{% endif %}>
+                                            class="tags__checkbox tags__checkbox_style_{{ tag.checkbox_style }}" {% if tag.pk in form.tags.value %}checked{% endif %}>
                                         <label for="id_{{ tag.slug }}" class="tags__label">{{ tag.title }}</label>
                                     </div>
                                 {% endfor %}

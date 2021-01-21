@@ -1,16 +1,13 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.http import HttpResponse
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic import DetailView, ListView
 
 from .forms import RecipeForm
-from .models import Recipe, User, RecipeIngredient, Ingredient
+from .models import Ingredient, Recipe, RecipeIngredient, User
 from .utils import get_ingredients
-
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, DetailView, CreateView, View
 
 
 class IndexListView(ListView):
@@ -109,6 +106,8 @@ class RecipeDetailView(DetailView):
 
 @login_required
 def shoplist_download(request):
+    """ Скачивание списка ингредиентов для покупки
+    """
     user = request.user
     shopping = user.shopper.all().values_list('recipe_id', flat=True)
     ingredients = RecipeIngredient.objects.values(
@@ -130,26 +129,23 @@ def shoplist_download(request):
 def new_recipe(request):
     """ Страница с формой добавления нового рецепта
     """
-    user = User.objects.get(username=request.user)
-    if request.method == "POST":
-        form = RecipeForm(request.POST or None, files=request.FILES or None)
-        ingredients = get_ingredients(request)
-        if not ingredients:
-            form.add_error(None, "Добавьте ингредиенты")
-        elif form.is_valid():
-            recipe = form.save(commit=False)
-            recipe.author = user
-            recipe.save()
-            for ing_name, amount in ingredients.items():
-                ingredient = get_object_or_404(Ingredient, title=ing_name)
-                recipe_ing = RecipeIngredient(
-                    recipe=recipe, ingredient=ingredient, amount=amount
-                )
-                recipe_ing.save()
-            form.save_m2m()
-            return redirect("index")
-    else:
-        form = RecipeForm()
+    form = RecipeForm(request.POST or None, files=request.FILES or None)
+    user = get_object_or_404(User, username=request.user)
+    ingredients = get_ingredients(request)
+
+    if form.is_valid():
+        recipe = form.save(commit=False)
+        recipe.author = user
+        recipe.save()
+        for ing_name, amount in ingredients.items():
+            ingredient = get_object_or_404(Ingredient, title=ing_name)
+            recipe_ing = RecipeIngredient(
+                recipe=recipe, ingredient=ingredient, amount=amount
+            )
+            recipe_ing.save()
+        form.save_m2m()
+        return redirect("index")
+
     return render(request, "new_recipe.html", {"form": form})
 
 
@@ -158,28 +154,28 @@ def recipe_edit(request, recipe_id):
     """ Страница с формой редактирования рецепта
     """
     recipe = get_object_or_404(Recipe, id=recipe_id)
+
     if request.user != recipe.author:
         return redirect("index")
-    if request.method == "POST":
-        form = RecipeForm(
-            request.POST or None, files=request.FILES or None, instance=recipe
-        )
-        ingredients = get_ingredients(request)
-        if form.is_valid():
-            RecipeIngredient.objects.filter(recipe=recipe).delete()
-            recipe = form.save(commit=False)
-            recipe.author = request.user
-            recipe.save()
-            for item in ingredients:
-                RecipeIngredient.objects.create(
-                    ingredient=Ingredient.objects.get(title=f"{item}"),
-                    recipe=recipe,
-                )
-            form.save_m2m()
-        return redirect("index")
+
     form = RecipeForm(
         request.POST or None, files=request.FILES or None, instance=recipe
     )
+    ingredients = get_ingredients(request)
+
+    if form.is_valid():
+        RecipeIngredient.objects.filter(recipe=recipe).delete()
+        recipe = form.save(commit=False)
+        recipe.author = request.user
+        recipe.save()
+        for item in ingredients:
+            RecipeIngredient.objects.create(
+                ingredient=get_object_or_404(Ingredient, title=f"{item}"),
+                recipe=recipe,
+            )
+        form.save_m2m()
+        return redirect("index")
+
     return render(
         request, "recipe_edit.html", {"form": form, "recipe": recipe},
     )
@@ -193,20 +189,3 @@ def recipe_delete(request, recipe_slug):
     if request.user == recipe.author:
         recipe.delete()
     return redirect("index")
-
-
-def page_not_found(request, exception):
-    return render(
-        request,
-        "misc/404.html",
-        {"path": request.path},
-        status=404
-    )
-
-
-def server_error(request):
-    return render(
-        request,
-        "misc/500.html",
-        status=500
-        )

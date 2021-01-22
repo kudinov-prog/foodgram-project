@@ -1,24 +1,23 @@
-<!doctype html>
-<html lang="en">
+{% extends 'base.html' %} 
+{% load recipes_extras %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Регистрация</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'pages/form.css' %}">
-</head>
+{% block title %} 
+    Регистрация 
+{% endblock %}
 
-<body class="body">
-    
-{% include 'includes/nav.html' %}
+{% load static %} 
+{% block css %}
+    <link rel="stylesheet" href="{% static 'pages/form.css' %}" />
+{% endblock %} 
 
-<main class="main container">
+{% block header %}
     <div class="main__header">
-        <h1 class="main__title">Регистрация</h1>
+    <h1 class="main__title">Регистрация</h1>
     </div>
+{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
     <div class="form-container">
         <form class="form" method="post" action="{% url 'signup' %}">
             {% csrf_token %}
@@ -71,9 +70,5 @@
             </div>
         </form>
     </div>
-</main>
 
-{% include 'includes/footer.html' %}
-
-</body>
-</html>
+{% endblock %} 

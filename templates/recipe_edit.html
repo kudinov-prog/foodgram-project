@@ -66,8 +66,8 @@
                     </div>
                     <div class="form__field-group-ingredientes-container">
 
-                        {% if recipe.recipes %}
-                            {% for item in recipe.recipes.all %}
+                        {% if recipe.recipe_ingredients %}
+                            {% for item in recipe.recipe_ingredients.all %}
                                 <div id="ing_{{ forloop.counter }}" class="form__field-item-ingredient">
                                     <span>{{ item.ingredient.title }} {{ item.amount }} {{ item.ingredient.unit }}</span><span class="form__field-item-delete"></span>
                                     <input id="nameIngredient_{{ forloop.counter }}" name="nameIngredient_{{ forloop.counter }}" type="hidden" value="{{ item.ingredient.title }}">

@@ -80,7 +80,7 @@ class RecipeIngredient(models.Model):
         Ingredient, on_delete=models.CASCADE, related_name='recipe_ingredients'
     )
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name='recipes'
+        Recipe, on_delete=models.CASCADE, related_name='recipe_ingredients' #recipes
     )
 
 
@@ -102,11 +102,11 @@ class Follow(models.Model):
 
 class Favorite(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='adder_user',
+        User, on_delete=models.CASCADE, related_name='favorites',
         null=True
     )
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name='favorite_recipe',
+        Recipe, on_delete=models.CASCADE, related_name='favorites',
         null=True
     )
 

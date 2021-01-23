@@ -51,7 +51,7 @@ class FavoriteListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         tags_filter = self.request.GET.getlist('filters')
         user = self.request.user
-        favorites = user.adder_user.all().values_list('recipe_id', flat=True)
+        favorites = user.favorites.all().values_list('recipe_id', flat=True)
         fav_recipes = Recipe.objects.filter(id__in=list(favorites))
         if tags_filter:
             fav_recipes = fav_recipes.filter(

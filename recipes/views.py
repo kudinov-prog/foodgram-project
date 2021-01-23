@@ -137,6 +137,7 @@ def new_recipe(request):
         recipe = form.save(commit=False)
         recipe.author = user
         recipe.save()
+
         for ing_name, amount in ingredients.items():
             ingredient = get_object_or_404(Ingredient, title=ing_name)
             recipe_ing = RecipeIngredient(
@@ -154,25 +155,25 @@ def recipe_edit(request, recipe_id):
     """ Страница с формой редактирования рецепта
     """
     recipe = get_object_or_404(Recipe, id=recipe_id)
-
-    if request.user != recipe.author:
-        return redirect("index")
-
     form = RecipeForm(
         request.POST or None, files=request.FILES or None, instance=recipe
     )
     ingredients = get_ingredients(request)
+
+    if request.user != recipe.author:
+        return redirect("index")
 
     if form.is_valid():
         RecipeIngredient.objects.filter(recipe=recipe).delete()
         recipe = form.save(commit=False)
         recipe.author = request.user
         recipe.save()
-        for item in ingredients:
-            RecipeIngredient.objects.create(
-                ingredient=get_object_or_404(Ingredient, title=f"{item}"),
-                recipe=recipe,
+        for ing_name, amount in ingredients.items():
+            ingredient = get_object_or_404(Ingredient, title=ing_name)
+            recipe_ing = RecipeIngredient(
+                recipe=recipe, ingredient=ingredient, amount=amount
             )
+            recipe_ing.save()
         form.save_m2m()
         return redirect("index")
 

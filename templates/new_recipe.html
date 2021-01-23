@@ -37,16 +37,13 @@
                 <p class="form__label">Теги</p>
                 <div class="form__field-group">
                     <div class="tags">
-                        <div class="tags__item">
                             {% csrf_token %}
                             {% for tag in all_tags %}
                             <div class="tags__item">
-                                <input type="checkbox" name="tags" value="{{ tag.pk }}" id="id_breakfast"
-                                    class="tags__checkbox tags__checkbox_style_{{ tag.checkbox_style }}">
+                                <input type="checkbox" name="tags" value="{{ tag.pk }}" id="id_breakfast" class="tags__checkbox tags__checkbox_style_{{ tag.checkbox_style }}">
                                 <label for="id_breakfast" class="tags__label">{{ tag.title }}</label>
                             </div>
                             {% endfor %}
-                        </div>
                     </div>
                     {% if form.errors %}
                     {% for error in form.tags.errors %}

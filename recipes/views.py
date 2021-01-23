@@ -18,7 +18,7 @@ class IndexListView(ListView):
     context_object_name = 'index'
 
     def get_queryset(self):
-        tags_filter = self.request.GET.getlist("filters")
+        tags_filter = self.request.GET.getlist('filters')
         recipes = Recipe.objects.all()
         if tags_filter:
             recipes = recipes.filter(
@@ -49,7 +49,7 @@ class FavoriteListView(LoginRequiredMixin, ListView):
     context_object_name = 'favorite'
 
     def get_queryset(self):
-        tags_filter = self.request.GET.getlist("filters")
+        tags_filter = self.request.GET.getlist('filters')
         user = self.request.user
         favorites = user.adder_user.all().values_list('recipe_id', flat=True)
         fav_recipes = Recipe.objects.filter(id__in=list(favorites))
@@ -81,7 +81,7 @@ class ProfileListView(ListView):
     context_object_name = 'profile'
 
     def get_queryset(self):
-        tags_filter = self.request.GET.getlist("filters")
+        tags_filter = self.request.GET.getlist('filters')
         author = get_object_or_404(User, username=self.kwargs.get('username'))
         author_recipes = Recipe.objects.filter(author=author)
         if tags_filter:
@@ -114,14 +114,14 @@ def shoplist_download(request):
         'ingredient_id__title', 'ingredient_id__unit').filter(
         recipe_id__in=list(shopping)).annotate(
         total=Sum('amount')).order_by('ingredient')
-    file_data = ""
+    file_data = ''
     for item in ingredients:
-        line = " ".join(str(value) for value in item.values())
-        file_data += line + "\n"
+        line = ' '.join(str(value) for value in item.values())
+        file_data += line + '\n'
     response = HttpResponse(
-        file_data, content_type="application/text charset=utf-8"
+        file_data, content_type='application/text charset=utf-8'
     )
-    response["Content-Disposition"] = 'attachment; filename="ShoppingList.txt"'
+    response['Content-Disposition'] = 'attachment; filename="ShoppingList.txt"'
     return response
 
 
@@ -145,9 +145,9 @@ def new_recipe(request):
             )
             recipe_ing.save()
         form.save_m2m()
-        return redirect("index")
+        return redirect('index')
 
-    return render(request, "new_recipe.html", {"form": form})
+    return render(request, 'new_recipe.html', {'form': form})
 
 
 @login_required
@@ -161,7 +161,7 @@ def recipe_edit(request, recipe_id):
     ingredients = get_ingredients(request)
 
     if request.user != recipe.author:
-        return redirect("index")
+        return redirect('index')
 
     if form.is_valid():
         RecipeIngredient.objects.filter(recipe=recipe).delete()
@@ -175,10 +175,10 @@ def recipe_edit(request, recipe_id):
             )
             recipe_ing.save()
         form.save_m2m()
-        return redirect("index")
+        return redirect('index')
 
     return render(
-        request, "recipe_edit.html", {"form": form, "recipe": recipe},
+        request, 'recipe_edit.html', {'form': form, 'recipe': recipe},
     )
 
 
@@ -189,4 +189,4 @@ def recipe_delete(request, recipe_slug):
     recipe = get_object_or_404(Recipe, slug=recipe_slug)
     if request.user == recipe.author:
         recipe.delete()
-    return redirect("index")
+    return redirect('index')

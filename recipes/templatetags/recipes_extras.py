@@ -7,7 +7,7 @@ register = template.Library()
 
 @register.filter
 def addclass(field, css):
-    return field.as_widget(attrs={"class": css})
+    return field.as_widget(attrs={'class': css})
 
 
 @register.filter(name='get_filter_values')
@@ -29,7 +29,7 @@ def get_filter_link(request, tag):
     return new_request.urlencode()
 
 
-@register.simple_tag()  # ?
+@register.simple_tag()
 def url_replace(request, page, new_page):
     query = request.GET.copy()
     query[page] = new_page

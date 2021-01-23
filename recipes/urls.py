@@ -5,29 +5,29 @@ from .views import shoplist_download
 
 urlpatterns = [
     path(
-        "",
+        '',
         views.IndexListView.as_view(),
-        name="index"
+        name='index'
     ),
     path(
-        "new/",
+        'new/',
         views.new_recipe,
-        name="new_recipe"
+        name='new_recipe'
     ),
     path(
-        "follow/",
+        'follow/',
         views.FollowListView.as_view(),
-        name="follow_index"
+        name='follow_index'
     ),
     path(
-        "favorite/",
+        'favorite/',
         views.FavoriteListView.as_view(),
-        name="favorite"
+        name='favorite'
     ),
     path(
-        "shopping/",
+        'shopping/',
         views.ShoppingListView.as_view(),
-        name="shopping_list"
+        name='shopping_list'
         ),
     path(
         'shopping/download/',
@@ -45,13 +45,13 @@ urlpatterns = [
         name='recipe'
         ),
     path(
-        "recipe/<int:recipe_id>/edit",
+        'recipe/<int:recipe_id>/edit/',
         views.recipe_edit,
-        name="recipe_edit"
+        name='recipe_edit'
         ),
     path(
-        "recipe/<slug:recipe_slug>/delete/",
+        'recipe/<slug:recipe_slug>/delete/',
         views.recipe_delete,
-        name="recipe_delete"
+        name='recipe_delete'
     ),
 ]

@@ -12,14 +12,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "[::1]",
-    "testserver",
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
+    'testserver',
 ]
 
 INTERNAL_IPS = [
-    "127.0.0.1",
+    '127.0.0.1',
 ]
 
 
@@ -50,7 +50,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'foodgram.urls'
 
-TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -62,8 +62,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                "recipes.context_processors.all_tags",
-                "recipes.context_processors.counter",
+                'recipes.context_processors.all_tags',
+                'recipes.context_processors.counter',
             ],
         },
     },
@@ -108,17 +108,17 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOGIN_URL = "/auth/login/"
-LOGIN_REDIRECT_URL = "index"
-LOGOUT_REDIRECT_URL = "index"
+LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'
 
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
 SITE_ID = 1
 

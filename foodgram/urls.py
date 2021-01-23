@@ -13,10 +13,10 @@ handler500 = proj_views.server_error
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('about/', include('django.contrib.flatpages.urls')),
-    path("auth/", include("users.urls")),
-    path("auth/", include("django.contrib.auth.urls")),
-    path("", include("recipes.urls")),
-    path("api/", include("api.urls")),
+    path('auth/', include('users.urls')),
+    path('auth/', include('django.contrib.auth.urls')),
+    path('', include('recipes.urls')),
+    path('api/', include('api.urls')),
 ]
 
 urlpatterns += [

@@ -85,10 +85,10 @@ class Ingredients(LoginRequiredMixin, View):
     """ Функция получения списка ингредиентов
     """
     def get(self, request):
-        text = request.GET["query"]
+        text = request.GET['query']
         ingredients = list(
             Ingredient.objects.filter(title__icontains=text).values(
-                "title", "unit"
+                'title', 'unit'
             )
         )
         return JsonResponse(ingredients, safe=False)

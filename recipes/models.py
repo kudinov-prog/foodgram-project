@@ -7,7 +7,7 @@ User = get_user_model()
 
 class Tag(models.Model):
     title = models.CharField(
-        max_length=50, verbose_name="Тег"
+        max_length=50, verbose_name='Тег'
     )
     slug = models.SlugField(blank=True)
     checkbox_style = models.CharField(max_length=15, blank=True)
@@ -34,7 +34,7 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='recipes',
-        verbose_name="Автор"
+        verbose_name='Автор'
     )
     title = models.CharField(
         max_length=200, verbose_name='Название'
@@ -43,24 +43,24 @@ class Recipe(models.Model):
         upload_to='recipes/', verbose_name='Изображение'
     )
     description = models.TextField(
-        verbose_name="Описание"
+        verbose_name='Описание'
     )
     ingredients = models.ManyToManyField(
-        Ingredient, through="RecipeIngredient",
+        Ingredient, through='RecipeIngredient',
         through_fields=('recipe', 'ingredient')
     )
     tags = models.ManyToManyField(
         Tag, verbose_name='Теги'
     )
     duration = models.PositiveIntegerField(
-        verbose_name="Время приготовления в минутах"
+        verbose_name='Время приготовления в минутах'
     )
     slug = models.SlugField(
         unique=True, verbose_name='Путь'
     )
     pub_date = models.DateTimeField(
         auto_now_add=True, blank=True,
-        null=True, verbose_name="Дата публикации"
+        null=True, verbose_name='Дата публикации'
     )
 
     class Meta:
@@ -86,10 +86,10 @@ class RecipeIngredient(models.Model):
 
 class Follow(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="follower"
+        User, on_delete=models.CASCADE, related_name='follower'
     )
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="following"
+        User, on_delete=models.CASCADE, related_name='following'
     )
 
     class Meta:

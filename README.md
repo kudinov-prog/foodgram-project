@@ -1,3 +1,5 @@
+![foodgram-project_workflow workflow](https://github.com/kudinov-prog/foodgram-project/workflows/foodgram-project_workflow%20workflow/badge.svg)
+
 ## Сайт "Продуктовый помощник FoodGram"
 
 Прямая ссылка на сайт --> [CLICK](http://130.193.45.150 "Продуктовый помощник") <--

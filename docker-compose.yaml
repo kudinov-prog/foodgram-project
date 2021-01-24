@@ -14,10 +14,11 @@ services:
       - ./.env
 
   web:
-    image: kudinov/foodgram-project:latest
+    build: .
     restart: always
     volumes:
       - static_volume:/static/
+      - media:/code/media/
     depends_on:
       - db
     env_file:

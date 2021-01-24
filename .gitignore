@@ -26,3 +26,4 @@ pytest.ini
 /test_media/
 dump.json
 
+.env

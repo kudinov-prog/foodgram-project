@@ -26,7 +26,7 @@ services:
   nginx:
     image: nginx:1.19.5-alpine
     volumes:
-      - static_volume:/code/static
+      - static_volume:/static
       - media:/media
       - ./nginx:/etc/nginx/conf.d
     ports:

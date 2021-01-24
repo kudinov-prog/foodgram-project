@@ -2,9 +2,8 @@
 <ul class="tags">
     {% for tag in all_tags %}
     <li class="tags__item">
-        <a id="{{ tags.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.checkbox_style }}
-                {% if tag.slug in request.GET|get_filter_values %} tags__checkbox_active {% endif %}"
-            href="{% url request.resolver_match.view_name %}?{{ request|get_filter_link:tag }}">
+        <a id="{{ tags.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.checkbox_style }}{% if tag.slug in request.GET|get_filter_values %} tags__checkbox_active {% endif %}"
+        href="{% if request.resolver_match.view_name == 'profile' %}{% url request.resolver_match.view_name author.username %}{% else %}{% url request.resolver_match.view_name %}{% endif %}?{{ request|get_filter_link:tag }}">
         </a>
         <span class="tags__label">{{ tag.title }}</span>
     </li>

@@ -13,6 +13,21 @@
 
 #### Стек: Python 3, Django, PostgreSQL, gunicorn, nginx, Яндекс.Облако(Ubuntu 20.04), Docker
 
+## Переменные окружения
+
+Для запуска базы данных в корневой папке проекта должен находиться файл 
+`.env` со схемой (в корне лежит примерный шаблон этого файла):
+
+```
+DB_ENGINE=django.db.backends.postgresql
+POSTGRES_DB=postgresql          # название БД
+POSTGRES_USER=postgresql_user   # пользователь БД
+POSTGRES_PASSWORD=postgresql    # пароль БД
+DB_HOST=db
+DB_PORT=5432
+
+```
+
 ## Установка проекта
 Для установки на локальной машине потребуется:
 * Скачать файлы проекта из репозитория
@@ -28,21 +43,8 @@ sudo docker-compose build
 ````
 sudo docker-compose up
 ````
-Далее необходимо войти в контейнер Web для настройки приложения
-Узнаем ID_контейнера web командой:
-````
-sudo docker container ls -a
-````
-Заходим в контейнер web:
-````
-sudo docker exec -ti id_контейнера bash
-````
 
 Создадим суперпользователя:
 ````
 python manage.py createsuperuser
 ````
-
-В данной версии проекта все данные для базы данных postgresql загружаются автоматически при миграции Django.
-
-Приложение запущено и готово к использованию.

@@ -5,18 +5,16 @@ import environ
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env.template'))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env.example'))
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '130.193.45.150',
     'localhost',
     '127.0.0.1',
-    '[::1]',
-    'testserver',
 ]
 
 INTERNAL_IPS = [

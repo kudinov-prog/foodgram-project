@@ -14,7 +14,7 @@ services:
       - ./.env.template
 
   web:
-    build: .
+    image: kudinov/foodgram-project:latest
     restart: always
     volumes:
       - static_volume:/static/

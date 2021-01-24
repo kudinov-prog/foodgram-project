@@ -1,4 +1,4 @@
-![foodgram-project_workflow workflow](https://github.com/kudinov-prog/foodgram-project/workflows/foodgram-project_workflow%20workflow/badge.svg)
+![foodgram_workflow workflow](https://github.com/kudinov-prog/foodgram-project/workflows/foodgram_workflow%20workflow/badge.svg)
 
 ## Сайт "Продуктовый помощник FoodGram"
 

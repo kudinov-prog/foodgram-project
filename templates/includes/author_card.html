@@ -16,14 +16,16 @@
                 </div>
             </li>
             {% endfor %}
+            {% if chef.recipes.count > 3 %}
+
             <li class="card-user__item">
-                {% if chef.recipes.count > 3 %}
                 <a href="{% url 'profile' chef.username %}" class="card-user__link link">Еще {{ chef.recipes.count|add:"-3" }} рецептов...</a>
-                {% endif %}
             </li>
+            
+            {% endif %}
         </ul>
     </div>
     <div class="card-user__footer">
-        <button class="button button_style_light-blue button_size_auto" name="subscribe" onclick="location.reload()">Отписаться</button>
+        <button class="button button_style_light-blue button_size_auto" name="subscribe" onclick="window.location.reload();">Отписаться</button>
     </div>
 </div>

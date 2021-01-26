@@ -9,7 +9,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '130.193.45.150',
@@ -20,7 +20,6 @@ ALLOWED_HOSTS = [
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
-
 
 INSTALLED_APPS = [
     'api',

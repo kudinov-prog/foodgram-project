@@ -9,9 +9,10 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
+    'foodbook.tk',
     '130.193.45.150',
     'localhost',
     '127.0.0.1',
